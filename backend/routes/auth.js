@@ -5,6 +5,7 @@ var jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const router = express.Router()
 const { body, validationResult } = require('express-validator');
+const fetchuser = require('../middleware/fetchUser')
 
 JWT_SECRET = 'modaserisagoode@boy';
 
@@ -52,7 +53,8 @@ router.post('/createuser',
 
     })
 
-//route 2: Post request for login ./api/auth/login
+
+//Route 2: Post request for login ./api/auth/login
 router.post('/login',
     body('email').isEmail().withMessage('Email not valid'),
     body('password').isLength({ min: 8 }).withMessage('Password should be at least 8 characters'),
@@ -95,5 +97,18 @@ router.post('/login',
         }
     }
 )
+
+//Router 3: Get loggedin User details Using POST '/api/auth/getuser/
+router.post('/getuser', fetchuser, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const user =await User.findById(userId).select('-password');
+        res.send(user);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send('Internal Server Error')
+    }
+})
+
 
 module.exports = router

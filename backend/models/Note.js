@@ -1,7 +1,12 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const notesSchema = new Schema({
+    user: {
+        //This is like foreign key to the User Document. this property stores the id of the user
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user'
+    },
     title: {
         type: String,
         require: true
@@ -20,5 +25,5 @@ const notesSchema = new Schema({
 }
 });
 
-const notes = mongoose.model('notes', userSchema);
+const notes = mongoose.model('notes', notesSchema);
 module.exports = notes;
